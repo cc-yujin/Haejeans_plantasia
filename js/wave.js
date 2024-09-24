@@ -1,3 +1,27 @@
+let csound;
+let initialized = false;
+
+// Csound 파일을 fetch로 불러오는 함수
+async function loadCsoundFile() {
+  const response = await fetch("../csd/wave.csd");
+  return response.text(); // 파일 내용을 텍스트로 반환
+}
+
+// Csound 초기화 및 설정 함수
+async function setupCsound() {
+  const soundCode = await loadCsoundFile(); // .csd 파일을 불러옴
+  csound = await Csound(); // Csound 브라우저 모듈 초기화
+  await csound.compileCsdText(soundCode); // 불러온 .csd 파일을 컴파일
+  await csound.start(); // Csound 시작
+  initialized = true;
+}
+
+async function mouseClicked() {
+  if (!initialized) {
+    await setupCsound(); // 마우스 클릭 시 Csound 초기화 및 시작
+  }
+}
+
 // How many rows of waves to display
 let rows = 7;
 // What is the range of motion for a single wave (vertically)
